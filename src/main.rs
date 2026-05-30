@@ -12,7 +12,10 @@ use agv_coordinator::state::WarehouseState;
 async fn main() {
     // Initialize tracing
     tracing_subscriber::fmt()
-        .with_env_filter(tracing_subscriber::EnvFilter::from_default_env().add_directive("agv_coordinator=debug".parse().unwrap()))
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::from_default_env()
+                .add_directive("agv_coordinator=debug".parse().unwrap()),
+        )
         .init();
 
     // Initialize autometrics prometheus exporter
@@ -32,6 +35,6 @@ async fn main() {
     // Run the server
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     tracing::info!("Server listening on {}", listener.local_addr().unwrap());
-    
+
     axum::serve(listener, app).await.unwrap();
 }

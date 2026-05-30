@@ -16,7 +16,9 @@ impl Ord for Node {
         // Notice that the we flip the ordering on costs.
         // In case of a tie we compare coordinates - this step is necessary
         // to make implementations of `PartialEq` and `Ord` consistent.
-        other.cost.cmp(&self.cost)
+        other
+            .cost
+            .cmp(&self.cost)
             .then_with(|| self.coord.x.cmp(&other.coord.x))
             .then_with(|| self.coord.y.cmp(&other.coord.y))
     }
@@ -43,7 +45,7 @@ pub fn a_star(
     if !grid.is_valid_and_unblocked(&start) || !grid.is_valid_and_unblocked(&goal) {
         return None;
     }
-    
+
     // Quick check if goal is blocked by other robots (unless it's the start node)
     if start != goal && occupied_coords.contains(&goal) {
         return None;
@@ -74,10 +76,22 @@ pub fn a_star(
         let current_g_score = *g_score.get(&current).unwrap_or(&usize::MAX);
 
         let neighbors = [
-            Coordinate { x: current.x.saturating_add(1), y: current.y },
-            Coordinate { x: current.x.saturating_sub(1), y: current.y },
-            Coordinate { x: current.x, y: current.y.saturating_add(1) },
-            Coordinate { x: current.x, y: current.y.saturating_sub(1) },
+            Coordinate {
+                x: current.x.saturating_add(1),
+                y: current.y,
+            },
+            Coordinate {
+                x: current.x.saturating_sub(1),
+                y: current.y,
+            },
+            Coordinate {
+                x: current.x,
+                y: current.y.saturating_add(1),
+            },
+            Coordinate {
+                x: current.x,
+                y: current.y.saturating_sub(1),
+            },
         ];
 
         for next in neighbors {
@@ -85,7 +99,7 @@ pub fn a_star(
             if next == current || !grid.is_valid_and_unblocked(&next) {
                 continue;
             }
-            
+
             // Avoid collisions with other robots
             if next != start && occupied_coords.contains(&next) {
                 continue;
@@ -124,7 +138,7 @@ mod tests {
             &empty_occupied,
         )
         .unwrap();
-        
+
         assert_eq!(
             path,
             vec![
@@ -142,7 +156,7 @@ mod tests {
         grid.add_obstacle(1, 0);
         grid.add_obstacle(1, 1);
         let empty_occupied = std::collections::HashSet::new();
-        
+
         // Start (0,0) -> Goal (2,0)
         // Must go down to (0,2), right to (2,2), then up to (2,0) or similar around the obstacles
         let path = a_star(
@@ -151,7 +165,7 @@ mod tests {
             Coordinate { x: 2, y: 0 },
             &empty_occupied,
         );
-        
+
         assert!(path.is_some());
         let p = path.unwrap();
         assert_eq!(*p.first().unwrap(), Coordinate { x: 0, y: 0 });
@@ -167,16 +181,16 @@ mod tests {
         grid.add_obstacle(1, 2);
         grid.add_obstacle(2, 1);
         grid.add_obstacle(1, 1);
-        
+
         let empty_occupied = std::collections::HashSet::new();
-        
+
         let path = a_star(
             &grid,
             Coordinate { x: 0, y: 0 },
             Coordinate { x: 2, y: 2 },
             &empty_occupied,
         );
-        
+
         assert!(path.is_none());
     }
 }

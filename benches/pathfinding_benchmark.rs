@@ -1,6 +1,6 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use agv_coordinator::models::{Coordinate, Grid};
 use agv_coordinator::pathfinding::a_star;
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::collections::HashSet;
 
 fn benchmark_a_star(c: &mut Criterion) {

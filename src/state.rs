@@ -21,7 +21,10 @@ impl WarehouseState {
         }
     }
 
-    pub fn get_occupied_coordinates(&self, excluding_robot_id: Option<&str>) -> HashSet<Coordinate> {
+    pub fn get_occupied_coordinates(
+        &self,
+        excluding_robot_id: Option<&str>,
+    ) -> HashSet<Coordinate> {
         let mut occupied = HashSet::new();
 
         for robot in self.robots.values() {
